@@ -1,4 +1,4 @@
-# Auto Explore Fog Tester
+# Auto Explore Fog | Caves | Other Tester
 ## 🔧 Yêu cầu hệ thống & cài đặt
 
 - **Hệ điều hành:** Windows 
