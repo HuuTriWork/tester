@@ -4,6 +4,7 @@
 - **Hệ điều hành:** Windows 
 - **Giả lập:** LDPlayer
 - **Python:** 3.8 hoặc cao hơn
+```pip install opencv-python numpy PyQt5```
 
 ---
 
