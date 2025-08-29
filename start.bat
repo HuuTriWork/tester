@@ -7,7 +7,6 @@ echo      Rise of Kingdoms Bot - Start
 echo ======================================
 echo.
 
-:: Kiểm tra Python đã cài chưa
 python --version >nul 2>&1
 if errorlevel 1 (
     echo [❌] Python chưa được cài đặt hoặc chưa có trong PATH.
@@ -17,7 +16,6 @@ if errorlevel 1 (
 
 echo [✔] Python đã sẵn sàng.
 
-:: Cài các thư viện cần thiết
 echo.
 echo [🔄] Đang kiểm tra và cài đặt thư viện...
 pip install --upgrade pip
@@ -26,7 +24,6 @@ pip install opencv-python numpy PyQt5
 echo.
 echo [✔] Tất cả thư viện đã được cài đặt.
 
-:: Chạy chương trình chính
 echo.
 echo [🚀] Đang chạy main.py ...
 python main.py
@@ -34,3 +31,4 @@ python main.py
 echo.
 echo [⚠] Script đã kết thúc.
 pause
+
