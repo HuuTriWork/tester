@@ -19,7 +19,7 @@ echo [✔] Python đã sẵn sàng.
 echo.
 echo [🔄] Đang kiểm tra và cài đặt thư viện...
 pip install --upgrade pip
-pip install opencv-python numpy PyQt5
+pip install opencv-python numpy PyQt5 requests pyperclip
 
 echo.
 echo [✔] Tất cả thư viện đã được cài đặt.
@@ -31,4 +31,3 @@ python main.py
 echo.
 echo [⚠] Script đã kết thúc.
 pause
-
