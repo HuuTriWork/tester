@@ -351,33 +351,59 @@ def logic_explore_fog(dev: str, log_fn, only_this_mode: bool, other_modes_select
     if captcha_enabled and do_captcha_check(dev, log_fn, stop_event):
         captcha_notify(dev)
         return True
-    pos_explore = wait_for_template(dev, "explore.png", timeout=8.0, stop_event=stop_event)
-    if not pos_explore:
-        if only_this_mode:
-            log_fn(f"[{dev}] Explore button not found, waiting longer...")
-            pos_explore = wait_for_template(dev, "explore.png", timeout=20.0, stop_event=stop_event)
-            if not pos_explore:
-                log_fn(f"[{dev}] Explore button still not found.")
+
+    if only_this_mode:
+        log_fn(f"[{dev}] Only Explore Fog selected waiting until Explore.")
+        while not stop_event.is_set():
+            if captcha_enabled and do_captcha_check(dev, log_fn, stop_event):
+                captcha_notify(dev)
+                return True
+            screen = adb_screencap_img(dev)
+            if screen is None:
+                if stop_event and stop_event.wait(0.8):
+                    return False
+                continue
+            pos_explore = find_on_screen(screen, "explore.png")
+            if pos_explore:
+                log_fn(f"[{dev}] Explore appears, will press.")
+                perform_tap(dev, *pos_explore, anti_ban)
+                if wait_or_stop(stop_event, get_delay(anti_ban)):
+                    return False
+                break
+            if stop_event and stop_event.wait(0.8):
                 return False
-        else:
-            if other_modes_selected:
-                log_fn(f"[{dev}] Explore not found. Trying to exit current panel before switching mode.")
-                try_exit(dev, log_fn, stop_event, anti_ban, timeout=4.0)
-                click_center(dev, log_fn, stop_event, anti_ban)
-                return False
+    else:
+        pos_explore = wait_for_template(dev, "explore.png", timeout=8.0, stop_event=stop_event)
+        if not pos_explore:
+            if only_this_mode:
+                log_fn(f"[{dev}] Explore button not found, waiting longer...")
+                pos_explore = wait_for_template(dev, "explore.png", timeout=20.0, stop_event=stop_event)
+                if not pos_explore:
+                    log_fn(f"[{dev}] Explore button still not found.")
+                    return False
             else:
+                if other_modes_selected:
+                    log_fn(f"[{dev}] Explore not found. Trying to exit current panel before switching mode.")
+                    try_exit(dev, log_fn, stop_event, anti_ban, timeout=4.0)
+                    click_center(dev, log_fn, stop_event, anti_ban)
+                    return False
+                else:
+                    return False
+        else:
+            perform_tap(dev, *pos_explore, anti_ban)
+            if wait_or_stop(stop_event, get_delay(anti_ban)):
                 return False
-    perform_tap(dev, *pos_explore, anti_ban)
-    if wait_or_stop(stop_event, get_delay(anti_ban)):
-        return False
+
     if captcha_enabled and do_captcha_check(dev, log_fn, stop_event):
         captcha_notify(dev)
         return True
+
     if not ensure_selected(dev, log_fn, stop_event, anti_ban):
         log_fn(f"[{dev}] Fog: Could not select troops.")
         return False
     if stop_event.is_set():
         return False
+
     pos_explore2 = wait_for_template(dev, "explore.png", timeout=6.0, stop_event=stop_event)
     if pos_explore2:
         perform_tap(dev, *pos_explore2, anti_ban)
@@ -583,7 +609,7 @@ class MainWindow(QMainWindow):
     sig_status = pyqtSignal(str, str)
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Update 23/8/2025")
+        self.setWindowTitle("Update 29/8/2025")
         self.setWindowIcon(QIcon("logo.png"))
         self.resize(280, 560)
         self.stop_event = threading.Event()
@@ -920,5 +946,3 @@ if __name__ == "__main__":
     win = MainWindow()
     win.show()
     sys.exit(app.exec_())
-
-
